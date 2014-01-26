@@ -8,6 +8,10 @@
  */
 
 struct TokenizerT_ {
+
+	char *seperators;
+	char *stream;
+
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -26,9 +30,13 @@ typedef struct TokenizerT_ TokenizerT;
  * You need to fill in this function as part of your implementation.
  */
 
-TokenizerT *TKCreate(char *separators, char *ts) {
-
-  return NULL;
+TokenizerT *TKCreate(char *separators, char *ts)
+{
+	TokenizerT *temp;
+	temp =  (struct Tokenizer) malloc(sizeof(struct TokensizerT));
+	temp->seperators = seprators;
+	temp->stream = ts;
+	return temp;
 }
 
 /*
