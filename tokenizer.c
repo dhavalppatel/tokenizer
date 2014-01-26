@@ -33,7 +33,7 @@ typedef struct TokenizerT_ TokenizerT;
 TokenizerT *TKCreate(char *separators, char *ts)
 {
 	TokenizerT *temp;
-	temp =  (struct Tokenizer) malloc(sizeof(struct TokensizerT));
+	temp =  (struct Tokenizer) malloc(sizeof(struct TokensizerT)); // Will this malloc the entire input? or just the size of one object
 	temp->seperators = seprators;
 	temp->stream = ts;
 	return temp;
