@@ -17,6 +17,9 @@ struct TokenizerT_ {
 typedef struct TokenizerT_ TokenizerT;
 
 /*
+ *
+ *
+ *
  * TKCreate creates a new TokenizerT object for a given set of separator
  * characters (given as a string) and a token stream (given as a string).
  * 
