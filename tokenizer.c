@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
@@ -37,8 +38,8 @@ typedef struct TokenizerT_ TokenizerT;
 TokenizerT *TKCreate(char *separators, char *ts)
 {
 	TokenizerT *temp;
-	temp =  (struct Tokenizer) malloc(sizeof(struct TokensizerT)); // Will this malloc the entire input? or just the size of one object
-
+	temp =  (struct Tokenizer) malloc(sizeof(struct TokenizerT)); // Will this malloc the entire input? or just the size of one object
+	temp->seperators = (char*)malloc(strlen(seperators) * sizeof(char));
 	temp->seperators = seprators;
 	temp->stream = ts;
 	return temp;
