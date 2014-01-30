@@ -86,17 +86,19 @@ char *TKGetNextToken(TokenizerT *tk) {
 		for(int i = 0 ; i < strlen(tk->separators); i++)
 		{
 
-			tk->stream = strtk->stream[counter];
+			//tk->stream = strtk->stream[counter];
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep )
 			{
-				if(foundToken == 'f') continue;
-				else
-					//found token, return it!
+				if(foundToken != 'f')
+					return temp;
 
 			}else
 			{
 				//set true
+				foundToken = 't';
+				char *x = tk->stream[counter];
+				strcat(temp, x);
 			}
 
 
