@@ -83,8 +83,8 @@ char *TKGetNextToken(TokenizerT *tk) {
 
 	while(counter < strlen(tk->stream))
 	{
-
-		for(int i = 0 ; i < strlen(tk->separators); i++)
+		int i;
+		for(i = 0 ; i < strlen(tk->separators); i++)
 		{
 
 			char currsep = tk->separators[i];
