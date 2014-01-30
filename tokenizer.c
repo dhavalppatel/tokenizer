@@ -37,8 +37,13 @@ typedef struct TokenizerT_ TokenizerT;
 
 TokenizerT *TKCreate(char *separators, char *ts)
 {
+	if(strlen(ts) < 1)
+	{
+		return NULL;
+	}
+
 	TokenizerT *temp;
-	temp =  malloc(sizeof(TokenizerT)); // Will this malloc the entire input? or just the size of one object
+	temp =  malloc(sizeof(TokenizerT));
 	temp->separators = (char*)malloc(strlen(separators) * sizeof(char));
 	temp->stream = (char*)malloc(strlen(ts) * sizeof(char));
 	temp->separators = separators;
@@ -82,6 +87,13 @@ char *TKGetNextToken(TokenizerT *tk) {
  */
 
 int main(int argc, char **argv) {
+
+ 	TokenizerT *start = TKCreate(argv[1], argv[2]);
+ 	if(argv[1] == NULL)
+ 		{
+ 			printf("%s", argv[2]);
+ 		}
+	int counter = strlen(start->separators);
 
   return 0;
 }
