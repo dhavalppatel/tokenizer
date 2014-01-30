@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+char *addchr(const char *orig, char c);
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
@@ -77,43 +77,53 @@ void TKDestroy(TokenizerT *tk) {
 
 char *TKGetNextToken(TokenizerT *tk) {
 
-
-	char *temp;
+	char *token = "";
 	char foundToken = 'f';
 	int counter = 0;
+
 	while(counter < strlen(tk->stream))
 	{
+
 		for(int i = 0 ; i < strlen(tk->separators); i++)
 		{
 
-			//tk->stream = strtk->stream[counter];
 			char currsep = tk->separators[i];
-			if( tk->stream[counter] == currsep )
+			if( tk->stream[counter] == currsep)
 			{
-				if(foundToken != 'f')
-					return temp;
-
+				if(foundToken != 'f'){
+					int size = strlen(tk->stream) - counter;
+					int tokenindex = counter + 1;
+					char* newstream = "";
+					strncpy(newstream, tk->stream + tokenindex, size);
+					tk->stream = newstream;
+					return token;
+				}
 			}else
 			{
 				//set true
 				foundToken = 't';
-				char *addthis = tk->stream[counter];
-				temp = addchr(temp, addthis);
+				char addthis = tk->stream[counter];
+				token = addchr(token, addthis);
 			}
 		}
 		counter++;
+
 	}
 
- return NULL;
+ return 0;
 }
 
 
-char* addchr(char* a, char* b){
-    int len = strlen(a) + strlen(b);
-    char *ret = (char*)malloc(len * sizeof(char) + 1);
-    *ret = '\0';
-    return strcat(strcat(ret, a) ,b);
+char *addchr(const char *orig, char c)
+{
+    int size = strlen(orig);
+    char *str = malloc(size + 2);
+    strcpy(str, orig);
+    str[size] = c;
+    str[size + 1] = '\0';
+    return str;
 }
+
 
 /*
  * main will have two string arguments (in argv[1] and argv[2]).
@@ -125,6 +135,7 @@ char* addchr(char* a, char* b){
 
 int main(int argc, char **argv) {
 
+
 	TokenizerT *start = TKCreate(argv[1], argv[2]);
 	if(strcmp(argv[1], "") == 0)
 	{
@@ -135,9 +146,13 @@ int main(int argc, char **argv) {
 	}
 
 	do{
-		char *token = TKGetNextToken(start);
 
-//		printf("%s", token);
+		char *token = TKGetNextToken(start);
+//		if(token == NULL)
+//		{
+//			continue;
+//		}
+		printf("%s", token);
 	}while(strlen(start->stream) != 1);
 
 	return 0;
