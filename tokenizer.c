@@ -77,17 +77,29 @@ void TKDestroy(TokenizerT *tk) {
 
 char *TKGetNextToken(TokenizerT *tk) {
 
+
+	char *temp;
+	char foundToken = 'f';
 	int counter = 0;
-	while(counter > strlen(tk->stream))
+	while(counter < strlen(tk->stream))
 	{
 		for(int i = 0 ; i < strlen(tk->separators); i++)
 		{
-			char currsep = tk->separators[i];
-			printf("%c", currsep);
-			if(  tk->stream[counter] == currsep )
-			{
 
+			tk->stream = strtk->stream[counter];
+			char currsep = tk->separators[i];
+			if( tk->stream[counter] == currsep )
+			{
+				if(foundToken == 'f') continue;
+				else
+					//found token, return it!
+
+			}else
+			{
+				//set true
 			}
+
+
 		}
 		counter++;
 	}
