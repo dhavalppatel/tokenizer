@@ -97,20 +97,22 @@ char *TKGetNextToken(TokenizerT *tk) {
 			{
 				//set true
 				foundToken = 't';
-				char *x = tk->stream[counter];
-				strcat(temp, x);
+				char *addthis = tk->stream[counter];
+				temp = addchr(temp, addthis);
 			}
-
-
 		}
 		counter++;
 	}
 
+ return NULL;
+}
 
 
-
-
-  return NULL;
+char* addchr(char* a, char* b){
+    int len = strlen(a) + strlen(b);
+    char *ret = (char*)malloc(len * sizeof(char) + 1);
+    *ret = '\0';
+    return strcat(strcat(ret, a) ,b);
 }
 
 /*
