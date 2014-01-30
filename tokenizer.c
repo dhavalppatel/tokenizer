@@ -49,7 +49,9 @@ TokenizerT *TKCreate(char *separators, char *ts)
 	temp->separators = separators;
 	temp->stream = ts;
 	return temp;
+
 }
+
 
 /*
  * TKDestroy destroys a TokenizerT object.  It should free all dynamically
@@ -75,6 +77,25 @@ void TKDestroy(TokenizerT *tk) {
 
 char *TKGetNextToken(TokenizerT *tk) {
 
+	int counter = 0;
+	while(counter > strlen(tk->stream))
+	{
+		for(int i = 0 ; i < strlen(tk->separators); i++)
+		{
+			char currsep = tk->separators[i];
+			printf("%c", currsep);
+			if(  tk->stream[counter] == currsep )
+			{
+
+			}
+		}
+		counter++;
+	}
+
+
+
+
+
   return NULL;
 }
 
@@ -88,12 +109,20 @@ char *TKGetNextToken(TokenizerT *tk) {
 
 int main(int argc, char **argv) {
 
- 	TokenizerT *start = TKCreate(argv[1], argv[2]);
- 	if(argv[1] == NULL)
- 		{
- 			printf("%s", argv[2]);
- 		}
-	int counter = strlen(start->separators);
+	TokenizerT *start = TKCreate(argv[1], argv[2]);
+	if(strcmp(argv[1], "") == 0)
+	{
+		printf("%s", argv[2]);
+	}
+	if(start == NULL){
+		return 1;
+	}
 
-  return 0;
+	do{
+		char *token = TKGetNextToken(start);
+
+//		printf("%s", token);
+	}while(strlen(start->stream) != 1);
+
+	return 0;
 }
