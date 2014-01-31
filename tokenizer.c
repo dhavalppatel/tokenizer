@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	int x = 0;
-	while(x < 20)
+	while(x < 1000)
 	{
 		//printf("%d", strlen(start->stream));
 		char *token = TKGetNextToken(start);
