@@ -90,12 +90,14 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-				if(foundToken != 'f'){
+				if(foundToken != 'f')
+				{
 					int size = strlen(tk->stream) - counter;
 					int tokenindex = counter + 1;
-					char* newstream = "";
-					strncpy(newstream, tk->stream + tokenindex, size);
-					tk->stream = newstream;
+					char remainder[size];
+					strncpy(remainder, tk->stream + tokenindex, size + 1);
+					tk->stream = remainder;
+					printf("%s", tk->stream);
 					return token;
 				}
 			}else
@@ -106,6 +108,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 				token = addchr(token, addthis);
 			}
 		}
+		printf("%d\n", counter);
 		counter++;
 
 	}
@@ -144,16 +147,19 @@ int main(int argc, char **argv) {
 	if(start == NULL){
 		return 1;
 	}
-
-	do{
-
+	int x = 0;
+	while(x < 4)
+	{
+		printf("%d", strlen(start->stream));
 		char *token = TKGetNextToken(start);
-//		if(token == NULL)
-//		{
-//			continue;
-//		}
-		printf("%s", token);
-	}while(strlen(start->stream) != 1);
+				if(token == NULL)
+				{
+					x++;
+					continue;
+				}
+				printf("%s\n", token);
+				x++;
+	}
 
 	return 0;
 }
