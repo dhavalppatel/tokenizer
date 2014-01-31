@@ -79,6 +79,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 
 	char foundToken = 'f';
 	int counter = 0;
+	char* token = "";
 
 	while(counter < strlen(tk->stream))
 	{
