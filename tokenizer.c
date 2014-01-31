@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
 					x++;
 					continue;
 				}
-				//printf("%s\n", token);
+				printf("%s\n", token);
 				x++;
 	}
 
