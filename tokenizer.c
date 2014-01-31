@@ -77,7 +77,6 @@ void TKDestroy(TokenizerT *tk) {
 
 char *TKGetNextToken(TokenizerT *tk) {
 
-	char *token = "";
 	char foundToken = 'f';
 	int counter = 0;
 
@@ -88,18 +87,16 @@ char *TKGetNextToken(TokenizerT *tk) {
 		{
 
 			char currsep = tk->separators[i];
-			if( tk->stream[counter] == currsep)
+			if( tk->stream[counter] == currsep && foundToken != 'f')
 			{
-				if(foundToken != 'f')
-				{
-					int size = strlen(tk->stream) - counter;
-					int tokenindex = counter + 1;
-					char remainder[size];
-					strncpy(remainder, tk->stream + tokenindex, size + 1);
-					tk->stream = remainder;
-					printf("%s", tk->stream);
-					return token;
-				}
+				int size = strlen(tk->stream) - counter;
+				int tokenindex = counter + 1;
+				char remainder[size];
+				strncpy(remainder, tk->stream + tokenindex, size + 1);
+				tk->stream = remainder;
+				printf("%s\n", token);
+				return token;
+			
 			}else
 			{
 				//set true
@@ -108,7 +105,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 				token = addchr(token, addthis);
 			}
 		}
-		printf("%d\n", counter);
+		//printf("%d\n", counter);
 		counter++;
 
 	}
@@ -148,16 +145,16 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	int x = 0;
-	while(x < 4)
+	while(x < 20)
 	{
-		printf("%d", strlen(start->stream));
+		//printf("%d", strlen(start->stream));
 		char *token = TKGetNextToken(start);
 				if(token == NULL)
 				{
 					x++;
 					continue;
 				}
-				printf("%s\n", token);
+				//printf("%s\n", token);
 				x++;
 	}
 
