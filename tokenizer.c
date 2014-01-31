@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 	TokenizerT *start = TKCreate(argv[1], argv[2]);
 	if(strcmp(argv[1], "") == 0)
 	{
-		printf("%s", argv[2]);
+		printf("%s\n", argv[2]);
 	}
 	if(start == NULL){
 		return 1;
