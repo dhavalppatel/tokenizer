@@ -52,6 +52,15 @@ TokenizerT *TKCreate(char *separators, char *ts)
 
 }
 
+char *addchr(const char *orig, char c)
+{
+    int size = strlen(orig);
+    char *str = malloc(size + 2);
+    strcpy(str, orig);
+    str[size] = c;
+    str[size + 1] = '\0';
+    return str;
+}
 
 /*
  * TKDestroy destroys a TokenizerT object.  It should free all dynamically
@@ -80,7 +89,6 @@ char *TKGetNextToken(TokenizerT *tk) {
 	char *token = "";
 	int foundToken = 0;
 	int counter = 0;
-	int added = 0;
 	char *remainder = malloc(sizeof(strlen(tk->stream)));
 
 	while(counter < strlen(tk->stream))
@@ -91,16 +99,22 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
+				if(counter == 0)
+				{
+					tk->stream += 1;
+					counter= -1;
+					break;
+				}
 				if(foundToken != 0)
 				{
+
 					int tokenindex = counter + 1;
 					strncpy(remainder, tk->stream + tokenindex, strlen(tk->stream) - strlen(token));
 					tk->stream = remainder;
-					//printf("%s\n", tk->stream);
 					char addthis = '\0';
 					token = addchr(token, addthis);
-					//printf("temp %s\n", token);
 					return token;
+
 				}
 			}else
 			{
@@ -110,10 +124,12 @@ char *TKGetNextToken(TokenizerT *tk) {
 					tk->stream = '\0';
 					return token;
 				}
-				//set true
-				foundToken = 1;
-				char addthis = tk->stream[counter];
-				token = addchr(token, addthis);
+
+				if(i == strlen(tk->separators) -1){
+					foundToken = 1;
+					char addthis = tk->stream[counter];
+					token = addchr(token, addthis);
+				}
 			}
 		}
 
@@ -123,18 +139,6 @@ char *TKGetNextToken(TokenizerT *tk) {
 
  return 0;
 }
-
-
-char *addchr(const char *orig, char c)
-{
-    int size = strlen(orig);
-    char *str = malloc(size + 2);
-    strcpy(str, orig);
-    str[size] = c;
-    str[size + 1] = '\0';
-    return str;
-}
-
 
 /*
  * main will have two string arguments (in argv[1] and argv[2]).
@@ -148,9 +152,10 @@ int main(int argc, char **argv) {
 
 
 	TokenizerT *start = TKCreate(argv[1], argv[2]);
-	if(strcmp(argv[1], "") == 0)
+	if(strlen(argv[1]) == 0)
 	{
-		printf("%s", argv[2]);
+		printf("%s\n", argv[2]);
+		return 0;
 	}
 	if(start == NULL){
 		return 1;
