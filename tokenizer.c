@@ -77,7 +77,7 @@ char* replaceEscChar(char *token, int index, char *hex)
 	strncpy(ret, token, index);
 	ret[index] = '\0';
 	strcat(ret, hex);
-	strcat(ret, token+index+2);
+	strcat(ret, token+index+1);
 	return ret;
 }
 
@@ -90,65 +90,76 @@ char *checkEscChar(char *token)
 
 	while(index <= size)
 	{
-		if(token[index +1] == '\n'){
+		if(token[index] == '\n'){
 			hex = "[0x0a]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 		}
-		else if(token[index+1] == '\t'){
+		else if(token[index] == '\t'){
 			hex = "[0x09]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
-		else if(token[index+1] == '\v'){
+		else if(token[index] == '\v'){
 			hex = "[0x0b]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
-		else if(token[index+1] == '\b'){
+		else if(token[index] == '\b'){
 			hex = "[0x08]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
-		else if(token[index+1] == '\r'){
+		else if(token[index] == '\r'){
 			hex = "[0x0d]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
-		else if(token[index+1] == '\f'){
+		else if(token[index] == '\f'){
 			hex = "[0x0c]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
-		else if(token[index+1] == '\a'){
+		else if(token[index] == '\a'){
 			hex = "[0x07]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 		}
-		else if(token[index+1] == '\\'){
+		else if(token[index] == '\\'){
+			if(token[index+1] == '\\'){
 			hex = "[0x5c]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
+			}
+			else {
+				char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
+				strncpy(modify, token, index);
+				modify[index] = '\0';
+				strcat(modify, token+1+index);
+				strcpy(token, modify);
+				free(modify);
+				index++;
+			}
 		}
-		else if(token[index+1] == '\"'){
+		else if(token[index] == '\"'){
 			hex = "[0x22]";
 			token = replaceEscChar(token, index, hex);
 			index = index+5;
 		}
-		else if(token[index+1] == '\0'){
+		else if(token[index] == '\0'){
 			strncpy(token, token, strlen(token)-1);
 			token[index] = '\0';
 		}
-		else{
-			char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
-			strncpy(modify, token, index);
-			modify[index] = '\0';
-			strcat(modify, token+1+index);
-			strcpy(token, modify);
-			free(modify);
-			index++;
-		}
-		
+//		else if(token[index] == '\\'){
+//			char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
+//			strncpy(modify, token, index);
+//			modify[index] = '\0';
+//			strcat(modify, token+1+index);
+//			strcpy(token, modify);
+//			free(modify);
+//			index++;
+//		}
+
 
 		size = strlen(token);
 		index++;
@@ -200,6 +211,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
+				printf("%c\n", currsep);
 //Error case: If separators are in the beginning of the string.
 				if(counter == 0)
 				{
@@ -210,7 +222,6 @@ char *TKGetNextToken(TokenizerT *tk) {
 //If token is found already, truncate stream to remainder and return token
 				if(foundToken != 0)
 				{
-
 					int tokenindex = counter + 1;
 					strncpy(remainder, tk->stream + tokenindex, strlen(tk->stream) - strlen(token));
 					tk->stream = remainder;
@@ -274,8 +285,8 @@ int main(int argc, char **argv) {
 				{
 					continue;
 				}
-//		token = checkEscChar(token);
-		printf("%s\n", token);
+		token = checkEscChar(token);
+//		printf("%s\n", token);
 	}
 
 	return 0;
