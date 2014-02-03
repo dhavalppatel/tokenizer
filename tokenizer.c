@@ -90,67 +90,65 @@ char *checkEscChar(char *token)
 
 	while(index <= size)
 	{
-		if(token[index] == '\\')
-		{
-			if(token[index +1] == 'n'){
-				hex = "[0x0a]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-			}
-			else if(token[index+1] == 't'){
-				hex = "[0x09]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-						}
-			else if(token[index+1] == 'v'){
-				hex = "[0x0b]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-						}
-			else if(token[index+1] == 'b'){
-				hex = "[0x08]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-						}
-			else if(token[index+1] == 'r'){
-				hex = "[0x0d]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-						}
-			else if(token[index+1] == 'f'){
-				hex = "[0x0c]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-						}
-			else if(token[index+1] == 'a'){
-				hex = "[0x07]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-			}
-			else if(token[index+1] == '\\'){
-				hex = "[0x5c]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-			}
-			else if(token[index+1] == '\"'){
-				hex = "[0x22]";
-				token = replaceEscChar(token, index, hex);
-				index = index+5;
-			}
-			else if(token[index+1] == '\0'){
-				strncpy(token, token, strlen(token)-1);
-				token[index] = '\0';
-			}
-			else{
-				char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
-				strncpy(modify, token, index);
-				modify[index] = '\0';
-				strcat(modify, token+1+index);
-				strcpy(token, modify);
-				free(modify);
-				index++;
-			}
+		if(token[index +1] == '\n'){
+			hex = "[0x0a]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
 		}
+		else if(token[index+1] == '\t'){
+			hex = "[0x09]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+					}
+		else if(token[index+1] == '\v'){
+			hex = "[0x0b]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+					}
+		else if(token[index+1] == '\b'){
+			hex = "[0x08]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+					}
+		else if(token[index+1] == '\r'){
+			hex = "[0x0d]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+					}
+		else if(token[index+1] == '\f'){
+			hex = "[0x0c]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+					}
+		else if(token[index+1] == '\a'){
+			hex = "[0x07]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+		}
+		else if(token[index+1] == '\\'){
+			hex = "[0x5c]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+		}
+		else if(token[index+1] == '\"'){
+			hex = "[0x22]";
+			token = replaceEscChar(token, index, hex);
+			index = index+5;
+		}
+		else if(token[index+1] == '\0'){
+			strncpy(token, token, strlen(token)-1);
+			token[index] = '\0';
+		}
+		else{
+			char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
+			strncpy(modify, token, index);
+			modify[index] = '\0';
+			strcat(modify, token+1+index);
+			strcpy(token, modify);
+			free(modify);
+			index++;
+		}
+		
 
 		size = strlen(token);
 		index++;
