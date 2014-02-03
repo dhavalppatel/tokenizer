@@ -239,7 +239,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 					tk->stream = '\0';
 					return token;
 				}
-//Add to token
+//Add the character to token
 				if(i == strlen(tk->separators) -1){
 					foundToken = 1;
 					char addthis = tk->stream[counter];
