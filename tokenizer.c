@@ -51,8 +51,8 @@ TokenizerT *TKCreate(char *separators, char *ts)
 //Creates tokenizer object. Malloc the object, the stream string and the separators string
 	TokenizerT *temp;
 	temp =  malloc(sizeof(TokenizerT));
-	temp->separators = (char*)malloc(strlen(separators) * sizeof(char));
-	temp->stream = (char*)malloc(strlen(ts) * sizeof(char));
+	temp->separators = (char*)malloc(sizeof(char)*(strlen(separators)));;
+	temp->stream = (char*)malloc(sizeof(char)*(strlen(ts)));;
 //Copy the input arguments into struct
 	temp->separators = separators;
 	temp->stream = ts;
@@ -72,6 +72,7 @@ char *addchr(char *orig, char c)
     return str;
 }
 
+//A helper method to replace the escape character into the appropriate hex number
 char* replaceEscChar(char *token, int index, char *hex, char c)
 {
 	char *ret = (char*)malloc(sizeof(char)*(strlen(token)+strlen(hex))-1);
@@ -87,7 +88,8 @@ char* replaceEscChar(char *token, int index, char *hex, char c)
 	return ret;
 }
 
-
+//Given a token, this method checks if there's a escape character and calls a helper method to replace the hex
+//Checks for a \ with a special character, if there is no special esc chars, then the \ is removed
 char *checkEscChar(char *token)
 {
 	int size = strlen(token);
@@ -96,6 +98,8 @@ char *checkEscChar(char *token)
 
 	while(index <= size)
 	{
+//Checks for the special escape characters and
+//if its none of the special characters, the \ is removed. A modified token is returned.
 		if(token[index] == '\n'){
 
 			hex = "[0x0a]";
@@ -148,6 +152,7 @@ char *checkEscChar(char *token)
 			token = replaceEscChar(token, index, hex, "\\");
 			index = index+5;
 			}
+//If there is no special escape char, then the \ is completely removed.
 			else {
 				char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
 				strncpy(modify, token, index);
@@ -159,7 +164,7 @@ char *checkEscChar(char *token)
 			}
 		}
 
-
+//size is updated
 		size = strlen(token);
 		index++;
 
@@ -175,10 +180,11 @@ char *checkEscChar(char *token)
  * You need to fill in this function as part of your implementation.
  */
 
-void TKDestroy(TokenizerT *tk) {
-		free(tk->stream);
-		free(tk->separators);
+void TKDestroy(TokenizerT *tk)
+{
 		free(tk);
+		free(tk->stream);
+//		free(tk->separators);
 }
 
 /*
@@ -213,15 +219,6 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-//				if(currsep == '\\')
-//				{
-//					int boolean = errCaseChk( tk->stream, tk->separators, counter, i);
-//					if(boolean == 1){
-//						counter++;
-//						i++;
-//					}
-//				}
-
 //Error case: If separators are in the beginning of the string.
 				if(counter == 0)
 				{
@@ -286,7 +283,7 @@ int main(int argc, char **argv) {
 	}
 
 
-//Call GetNextToken and print out each token until stream reaches the null terminator
+//Call GetNextToken and print out each token until stream reaches a null terminator
 	while((start->stream) != '\0' )
 	{
 
@@ -299,6 +296,6 @@ int main(int argc, char **argv) {
 		printf("%s\n", token);
 	}
 
-	//TKDestroy(start);
+	TKDestroy(start);
 	return 0;
 }
