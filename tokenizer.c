@@ -332,7 +332,7 @@ int main(int argc, char **argv) {
 		char *token = TKGetNextToken(start);
 				if(token == NULL)
 				{
-					continue;
+					break;
 				}
 		token = checkEscChar(token);
 		printf("%s\n", token);
