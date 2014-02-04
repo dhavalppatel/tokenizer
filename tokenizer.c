@@ -339,6 +339,8 @@ int main(int argc, char **argv) {
 		token = checkEscChar(token);
 		printf("%s\n", token);
 	}
+	
+	TKDestroy(start);
 
 	return 0;
 }
