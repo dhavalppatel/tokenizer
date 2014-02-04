@@ -252,14 +252,14 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-//				if(currsep == '\\')
-//				{
-//					int boolean = errCaseChk( *(tk), counter, i);
-//					if(boolean == 1){
-//						counter++;
-//						i++;
-//					}
-//				}
+				if(currsep == '\\')
+				{
+					int boolean = errCaseChk( *(tk), counter, i);
+					if(boolean == 1){
+						counter++;
+						i++;
+					}
+				}
 
 //Error case: If separators are in the beginning of the string.
 				if(counter == 0)
