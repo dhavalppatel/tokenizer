@@ -6,7 +6,7 @@
 #include <string.h>
 char *addchr( char *orig, char c);
 char *checkEscChar(char *token);
-char* replaceEscChar(char *token, int index, char *hex);
+char* replaceEscChar(char *token, int index, char *hex, char c);
 
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
@@ -72,13 +72,17 @@ char *addchr(char *orig, char c)
     return str;
 }
 
-char* replaceEscChar(char *token, int index, char *hex)
+char* replaceEscChar(char *token, int index, char *hex, char c)
 {
 	char *ret = (char*)malloc(sizeof(char)*(strlen(token)+strlen(hex))-1);
 	strncpy(ret, token, index);
 	ret[index] = '\0';
 	strcat(ret, hex);
+	if(c != 'n')
+	strcat(ret, token+index+2);
+	else
 	strcat(ret, token+index+1);
+
 	return ret;
 }
 
@@ -137,43 +141,53 @@ char *checkEscChar(char *token)
 	{
 		if(token[index] == '\n'){
 			hex = "[0x0a]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'n');
 			index = index+5;
 		}
-		else if(token[index] == '\t'){
+		else if(token[index] == '\\' && token[index+1] == 't'){
 			hex = "[0x09]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 't');
 			index = index+5;
 					}
-		else if(token[index] == '\v'){
+		else if(token[index] == '\\' && token[index+1] == 'v'){
 			hex = "[0x0b]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'v');
 			index = index+5;
 					}
-		else if(token[index] == '\b'){
+		else if(token[index] == '\\' && token[index+1] == 'b'){
 			hex = "[0x08]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'b');
 			index = index+5;
 					}
-		else if(token[index] == '\r'){
+		else if(token[index] == '\\' && token[index+1] == 'r'){
 			hex = "[0x0d]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'r');
 			index = index+5;
 					}
-		else if(token[index] == '\f'){
+		else if(token[index] == '\\' && token[index+1] == 'f'){
 			hex = "[0x0c]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'f');
 			index = index+5;
 					}
-		else if(token[index] == '\a'){
+		else if(token[index] == '\\' && token[index+1] == 'a'){
 			hex = "[0x07]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, 'a');
 			index = index+5;
+		}
+		else if(token[index] == '\\' && token[index+1] == '\"'){
+				hex = "[0x22]";
+				token = replaceEscChar(token, index, hex, '\"');
+				index = index+5;
+		}
+		else if(token[index] == '\0'){
+				strncpy(token, token, strlen(token)-1);
+				token[index] = '\0';
 		}
 		else if(token[index] == '\\'){
+
 			if(token[index+1] == '\\'){
 			hex = "[0x5c]";
-			token = replaceEscChar(token, index, hex);
+			token = replaceEscChar(token, index, hex, "\\");
 			index = index+5;
 			}
 			else {
@@ -186,15 +200,7 @@ char *checkEscChar(char *token)
 				index++;
 			}
 		}
-		else if(token[index] == '\"'){
-			hex = "[0x22]";
-			token = replaceEscChar(token, index, hex);
-			index = index+5;
-		}
-		else if(token[index] == '\0'){
-			strncpy(token, token, strlen(token)-1);
-			token[index] = '\0';
-		}
+
 
 		size = strlen(token);
 		index++;
@@ -246,14 +252,14 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-				if(currsep == '\\')
-				{
-					int boolean = errCaseChk( *(tk), counter, i);
-					if(boolean == 1){
-						counter++;
-						i++;
-					}
-				}
+//				if(currsep == '\\')
+//				{
+//					int boolean = errCaseChk( *(tk), counter, i);
+//					if(boolean == 1){
+//						counter++;
+//						i++;
+//					}
+//				}
 
 //Error case: If separators are in the beginning of the string.
 				if(counter == 0)
