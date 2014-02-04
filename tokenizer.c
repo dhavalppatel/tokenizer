@@ -7,6 +7,7 @@
 char *addchr( char *orig, char c);
 char *checkEscChar(char *token);
 char* replaceEscChar(char *token, int index, char *hex);
+
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
@@ -81,6 +82,50 @@ char* replaceEscChar(char *token, int index, char *hex)
 	return ret;
 }
 
+int errCaseChk(TokenizerT tk, int counter, int index)
+{
+	int true = 1;
+	if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'n')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 't')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'v')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'b')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'r')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'f')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == 'a')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == '\\')
+	{
+		return true;
+	}
+	else if(tk.stream[counter+1] == tk.separators[index+1] && tk.separators[index+1] == '\"')
+		{
+			return true;
+		}
+
+	return 0;
+}
+
+
 
 char *checkEscChar(char *token)
 {
@@ -150,16 +195,6 @@ char *checkEscChar(char *token)
 			strncpy(token, token, strlen(token)-1);
 			token[index] = '\0';
 		}
-//		else if(token[index] == '\\'){
-//			char *modify =  (char*)malloc(sizeof(char)*(strlen(token)-1));
-//			strncpy(modify, token, index);
-//			modify[index] = '\0';
-//			strcat(modify, token+1+index);
-//			strcpy(token, modify);
-//			free(modify);
-//			index++;
-//		}
-
 
 		size = strlen(token);
 		index++;
@@ -211,7 +246,15 @@ char *TKGetNextToken(TokenizerT *tk) {
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-				printf("%c\n", currsep);
+				if(currsep == '\\')
+				{
+					int boolean = errCaseChk( *(tk), counter, i);
+					if(boolean == 1){
+						counter++;
+						i++;
+					}
+				}
+
 //Error case: If separators are in the beginning of the string.
 				if(counter == 0)
 				{
@@ -239,7 +282,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 					tk->stream = '\0';
 					return token;
 				}
-//Add the character to token
+//Add to token
 				if(i == strlen(tk->separators) -1){
 					foundToken = 1;
 					char addthis = tk->stream[counter];
@@ -286,7 +329,7 @@ int main(int argc, char **argv) {
 					continue;
 				}
 		token = checkEscChar(token);
-//		printf("%s\n", token);
+		printf("%s\n", token);
 	}
 
 	return 0;
