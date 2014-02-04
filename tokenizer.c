@@ -220,6 +220,7 @@ char *checkEscChar(char *token)
 void TKDestroy(TokenizerT *tk) {
 	free(tk->separators);
 	free(tk->stream);
+	free(tk);
 }
 
 /*
