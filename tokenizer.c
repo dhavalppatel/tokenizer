@@ -283,7 +283,7 @@ int main(int argc, char **argv) {
 	{
 		char *token = argv[2];
 		token = checkEscChar(token);
-		printf("%s", token);
+		printf("%s\n", token);
 		return 0;
 	}
 
