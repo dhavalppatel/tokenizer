@@ -300,6 +300,10 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
+//If there is no string given in the argument
+	if(strlen(argv[2]) == 0){
+		return 0;
+	}
 
 //Call GetNextToken and print out each token until stream reaches a null terminator
 	while((start->stream) != '\0' )
