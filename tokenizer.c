@@ -133,25 +133,25 @@ char *checkEscChar(char *token)
 			token = replaceEscChar(token, index, hex, 'f');
 			index = index+5;
 					}
+		else if(token[index] == '\\' && token[index+1] == '\"' ){
+			hex = "[0x22]";
+			token = replaceEscChar(token, index, hex, 'x');
+			index = index+5;
+				}
 		else if(token[index] == '\\' && token[index+1] == 'a'){
 			hex = "[0x07]";
 			token = replaceEscChar(token, index, hex, 'a');
 			index = index+5;
 		}
-		else if(token[index] == '\"'){
-				hex = "[0x22]";
-				token = replaceEscChar(token, index, hex, 'n');
-				index = index+5;
-		}
-		else if(token[index] == '\\' && token[index] == '\0' ){
-				strncpy(token, token, strlen(token)-1);
-				token[index] = '\0';
-		}
+//		else if(token[index] == '\\' && token[index] == '\0' ){
+//				strncpy(token, token, strlen(token)-1);
+//				token[index] = '\0';
+//		}
 		else if(token[index] == '\\'){
 
 			if(token[index+1] == '\\'){
 			hex = "[0x5c]";
-			token = replaceEscChar(token, index, hex, "\\");
+			token = replaceEscChar(token, index, hex, '\\');
 			index = index+5;
 			}
 //If there is no special escape char, then the \ is completely removed.
@@ -204,32 +204,41 @@ void TKDestroy(TokenizerT *tk)
 char *TKGetNextToken(TokenizerT *tk) {
 
 
-//Creates a temporary array to store the the remainder of the stream
+// Creates a temporary array to store the the remainder of the stream
 	char *token = "";
 	int foundToken = 0;
 	int counter = 0;
 	char *remainder = malloc(sizeof(strlen(tk->stream)));
 
-//Outer loop runs to the end of the stream string
-//Inner loop runs to the end of the separators string
+// Outer loop runs to the end of the stream string
+// Inner loop runs to the end of the separators string
 	while(counter < strlen(tk->stream))
 	{
 		int i;
 		for(i = 0 ; i < strlen(tk->separators); i++)
 		{
-//Checks current separator with current character. If yes then checks if token has been found yet
-//If no, then the character is added to the current token
+// Checks current separator with current character. If yes then checks if token has been found yet
+// If no, then the character is added to the current token
 			char currsep = tk->separators[i];
 			if( tk->stream[counter] == currsep)
 			{
-//Error case: If separators are in the beginning of the string.
+// Error case: If separators are in the beginning of the string.
 				if(counter == 0)
 				{
-					tk->stream += 1;
+// Error case: IF separator is at the beginning and stream has been truncated:
+// Add null terminator to end of token and stream
+					if(counter == strlen(tk->stream)-1)
+						{
+							tk->stream = '\0';
+							char addthis = '\0';
+							token = addchr(token, addthis);
+							return token;
+						}
+					tk->stream++;
 					counter= -1;
 					break;
 				}
-//If token is found already, truncate stream to remainder and return token
+// If token is found already, truncate stream to remainder and return token
 				if(foundToken != 0)
 				{
 					int tokenindex = counter + 1;
@@ -242,18 +251,22 @@ char *TKGetNextToken(TokenizerT *tk) {
 				}
 			}else
 			{
-//Manually add null terminator to the stream.
-				if(counter == strlen(tk->stream)-1)
-				{
-					strcpy(token, tk->stream);
-					tk->stream = '\0';
-					return token;
-				}
-//Add to token
+// Since current separator is not current character:
+// Add to token
 				if(i == strlen(tk->separators) -1){
 					foundToken = 1;
 					char addthis = tk->stream[counter];
 					token = addchr(token, addthis);
+				}
+
+// Checks if we have reached end of the string and end of separators, if yes then
+// Manually add null terminator to the stream if we have reached the end of the stream
+				if(counter == strlen(tk->stream)-1 && i == strlen(tk->separators) -1)
+				{
+					tk->stream = '\0';
+					char addthis = '\0';
+					token = addchr(token, addthis);
+					return token;
 				}
 			}
 		}
@@ -297,8 +310,10 @@ int main(int argc, char **argv) {
 				{
 					break;
 				}
+
 		token = checkEscChar(token);
 		printf("%s\n", token);
+
 	}
 
 	TKDestroy(start);
