@@ -54,8 +54,9 @@ TokenizerT *TKCreate(char *separators, char *ts)
 	temp->separators = (char*)malloc(sizeof(char)*(strlen(separators)));;
 	temp->stream = (char*)malloc(sizeof(char)*(strlen(ts)));;
 //Copy the input arguments into struct
-	temp->separators = separators;
-	temp->stream = ts;
+	strcpy(temp->separators, separators);
+	strcpy(temp->stream, ts);
+
 	return temp;
 
 }
@@ -96,8 +97,9 @@ char *checkEscChar(char *token)
 	char *hex;
     int index=0;
 
-	while(index <= size)
+    while(index <= size)
 	{
+
 //Checks for the special escape characters and
 //if its none of the special characters, the \ is removed. A modified token is returned.
 		if(token[index] == '\n'){
@@ -141,7 +143,7 @@ char *checkEscChar(char *token)
 				token = replaceEscChar(token, index, hex, 'n');
 				index = index+5;
 		}
-		else if(token[index] == '\0'){
+		else if(token[index] == '\\' && token[index] == '\0' ){
 				strncpy(token, token, strlen(token)-1);
 				token[index] = '\0';
 		}
@@ -182,9 +184,9 @@ char *checkEscChar(char *token)
 
 void TKDestroy(TokenizerT *tk)
 {
-		free(tk);
+		free(tk->separators);
 		free(tk->stream);
-//		free(tk->separators);
+		free(tk);
 }
 
 /*
@@ -200,6 +202,7 @@ void TKDestroy(TokenizerT *tk)
  */
 
 char *TKGetNextToken(TokenizerT *tk) {
+
 
 //Creates a temporary array to store the the remainder of the stream
 	char *token = "";
@@ -278,7 +281,9 @@ int main(int argc, char **argv) {
 //If there are no separators, then print out the whole stream and return;
 	if(strlen(argv[1]) == 0)
 	{
-		printf("%s\n", argv[2]);
+		char *token = argv[2];
+		token = checkEscChar(token);
+		printf("%s", token);
 		return 0;
 	}
 
