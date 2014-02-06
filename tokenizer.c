@@ -6,7 +6,7 @@
 #include <string.h>
 char *addchr( char *orig, char c);
 char *checkEscChar(char *token);
-char* replaceEscChar(char *token, int index, char *hex, char c);
+char* replaceEscChar(char *token, int index, char *hex);
 
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
@@ -74,7 +74,7 @@ char *addchr(char *orig, char c)
 }
 
 //A helper method to replace the escape character into the appropriate hex number
-char* replaceEscChar(char *token, int index, char *hex, char c)
+char* replaceEscChar(char *token, int index, char *hex)
 {
 	char *ret = (char*)malloc(sizeof(char)*(strlen(token)+strlen(hex))-1);
 	strncpy(ret, token, index);
@@ -102,56 +102,52 @@ char *checkEscChar(char *token)
 
 //Checks for the special escape characters and
 //if its none of the special characters, the \ is removed. A modified token is returned.
-		if(token[index] == '\n'){
+		if(token[index] == '\\' && token[index+1] == 'n'){
 
 			hex = "[0x0a]";
-			token = replaceEscChar(token, index, hex, 'n');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 		}
 		else if(token[index] == '\\' && token[index+1] == 't'){
 			hex = "[0x09]";
-			token = replaceEscChar(token, index, hex, 't');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
 		else if(token[index] == '\\' && token[index+1] == 'v'){
 			hex = "[0x0b]";
-			token = replaceEscChar(token, index, hex, 'v');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
 		else if(token[index] == '\\' && token[index+1] == 'b'){
 			hex = "[0x08]";
-			token = replaceEscChar(token, index, hex, 'b');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
 		else if(token[index] == '\\' && token[index+1] == 'r'){
 			hex = "[0x0d]";
-			token = replaceEscChar(token, index, hex, 'r');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
 		else if(token[index] == '\\' && token[index+1] == 'f'){
 			hex = "[0x0c]";
-			token = replaceEscChar(token, index, hex, 'f');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 					}
 		else if(token[index] == '\\' && token[index+1] == '\"' ){
 			hex = "[0x22]";
-			token = replaceEscChar(token, index, hex, 'x');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 				}
 		else if(token[index] == '\\' && token[index+1] == 'a'){
 			hex = "[0x07]";
-			token = replaceEscChar(token, index, hex, 'a');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 		}
-//		else if(token[index] == '\\' && token[index] == '\0' ){
-//				strncpy(token, token, strlen(token)-1);
-//				token[index] = '\0';
-//		}
 		else if(token[index] == '\\'){
 
 			if(token[index+1] == '\\'){
 			hex = "[0x5c]";
-			token = replaceEscChar(token, index, hex, '\\');
+			token = replaceEscChar(token, index, hex);
 			index = index+5;
 			}
 //If there is no special escape char, then the \ is completely removed.
